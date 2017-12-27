@@ -13,7 +13,7 @@ public class Assert {
 	public static void notFalse(boolean flag) {
 		if (!flag) {
 			System.out.println("Failed notFalse Assertion");
-			throw new  IllegalArgumentException();
+			throw new IllegalArgumentException();
 		}
 	}
 

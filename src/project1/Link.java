@@ -18,6 +18,10 @@ public class Link {
 			this.elem = elem;
 			nextx = nexty = null;
 		}
+		
+		public void setElem(float elem) {
+			this.elem = elem;
+		}
 
 		public float elem() {
 			return elem;
@@ -31,35 +35,34 @@ public class Link {
 			return element;
 		}
 		
-		public void setElem(float elem) {
-			this.elem = elem;
-		}
-		
-		public float[] next() {
-			return null;
-		}
-		
 		public void setNextX(Link nextx) {
 			this.nextx = nextx;
-		}	
+		}
 		
 		public Link getNextX() {
 			return nextx;
+		}
+		
+		public void setNextY(Link nexty) {
+			this.nexty = nexty;
 		}
 		
 		public Link getNextY() {
 			return nexty;
 		}
 		
-		public void setNextY(Link nexty) {
-			this.nexty = nexty;
-		}
-
-		public boolean hasNextY() {
-			return current.getNextY() != null;
+		public float[] next() {
+			return null;
 		}
 
 		public boolean hasNextX() {
 			return current.getNextX() != null;
 		}
+		
+		public boolean hasNextY() {
+			return current.getNextY() != null;
+		}
+		
 	}
+
+

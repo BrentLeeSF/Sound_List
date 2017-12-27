@@ -7,8 +7,8 @@ public class LinkedList {
 
 	private Link head, tail, firstNode, lastNode = null;
 	
-	private int y = 0;
-	private int x = 0;
+	/*private int y = 0;
+	private int x = 0;*/
 	private int length;
 	
 
@@ -18,18 +18,20 @@ public class LinkedList {
 		length = 0;
 	}
 
-	/* */
-	public void clear() {
+	/* Clears linked list. Sets tail to head */
+	/*public void clear() {
 		head.setNextX(null);
 		tail = head;
 		length = 0;
-	}
+	}*/
 
-	public int size() {
+	/* Returns length of linked list */
+	/*public int size() {
 		return length;
-	}
+	}*/
 	
-	public int length() {
+	/* Returns number of samples */
+	/*public int length() {
 		return musList.getNumSamples();
 	}
 
@@ -50,9 +52,9 @@ public class LinkedList {
 			}
 		}
 		
-	}
+	}*/
 
-	public boolean isEmpty() {
+	/*public boolean isEmpty() {
 		return head == null;
 	}
 
@@ -73,5 +75,6 @@ public class LinkedList {
 	public Link setLastNode(Link lastNode) {
 		this.lastNode = lastNode;
 		return lastNode;
-	}
+	}*/
+	
 }

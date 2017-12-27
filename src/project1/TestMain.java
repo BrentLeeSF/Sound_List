@@ -140,8 +140,10 @@ public class TestMain {
 			boolean singleSuceess = true;
 			for (int chan = 0; chan < numChannels; chan++)
 			{
-				 currentTime = 0;
+				currentTime = 0;
+
 				Iterator<Float> it = listOfLists[0].iterator(chan);
+
 				while (it.hasNext())
 				{
 					Float nextSample = it.next();
@@ -468,9 +470,9 @@ public class TestMain {
 		result = testMultiChannelSineWave(2, play);
 		printResult(result);
 
-		System.out.println("Testing 10 channel simple sine wave");
-		result = testMultiChannelSineWave(2, false);  // Can't play 10 channel sounds anyway!
-		printResult(result);
+		/*System.out.println("Testing 10 channel simple sine wave");
+		result = testMultiChannelSineWave(2, play);  // Can't play 10 channel sounds anyway!
+		printResult(result);*/
 
 		System.out.println("Testing make mono (2 channel)");
 		result = testMakeMono(2, play);
@@ -538,3 +540,4 @@ public class TestMain {
 	}
 
 }
+
