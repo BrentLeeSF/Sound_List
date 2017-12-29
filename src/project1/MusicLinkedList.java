@@ -1,12 +1,10 @@
 package project1;
-
-
 import java.util.Iterator;
 
 
 public class MusicLinkedList implements MusicList {
 
-	//InnerIterator iterator;
+
 	private float sampleRate;
 	private float duration;
 	private int numChannels;
@@ -41,32 +39,54 @@ public class MusicLinkedList implements MusicList {
 		return duration;
 	}
 	
-	//TODO 15pts
-	@Override
-	public void changeSampleRate(float newRate) {
-		//sampleRate = newRate*getSampleRate();
-	}
 	
-	// TODO 10pts - Adds an echo effect to the soundList 
+	/** 
+	 * Adds an echo effect to the soundList. 
+	 * Get delay, continually loop to find first node to start delay. While delay Link is not null
+	 * loop through and set sample to next sample with delay for echo effect
+	 */
 	@Override
 	public void addEcho(float delay, float percent) {
 		
+		float delayStart = delay*sampleRate;
+		Link delayStartNode = head;
+		
+		for(int i = 0 ; i < delayStart; i++){
+			
+			delayStartNode = delayStartNode.getNextX();
+		}
+		
+		Link headX = head;
+		
+		while(delayStartNode != null){
+			
+			Link headY = headX;
+			Link delayStartY = delayStartNode;
+			
+			while(delayStartY != null){
+				
+				delayStartY.setElem(delayStartY.elem() + headY.elem()*percent);
+				delayStartY = delayStartY.getNextY();
+				headY = headY.getNextY();
+				
+			}
+			
+			delayStartNode = delayStartNode.getNextX();
+			headX = headX.getNextX();
+			
+		}
+
 	}
 	
 	
-	
-	// TODO 5pts
-	/** Combine(SoundList clipToCombine, boolean allowClipping) 
-	* Add the waveform of clipToCombine to this clip. 
+	/**  Add the waveform of clipToCombine to this clip. 
 	* If allowClipping is true, clip all samples in the range -1, 1. 
-	* If allowClipping is false, rescale resuLting waveform to be in the range -1, 1 
-	*
-	* If allowClipping is TRUE - Iterate through both the original musicList and the clipToCombine.
-	* Starting at the head of the musicList and the head of the clipToCombine */
+	* If allowClipping is false, iterate through entire structure, save biggest
+	* sample as max. Iterate through again, and save sample as ratio of max */ 
 	@Override
 	public void combine(MusicLinkedList clipToCombine, boolean allowClipping) {
 			
-		// TODO
+
 		Link temp1 = head;
 		current = head;
 		float max = 1.0f;
@@ -103,11 +123,6 @@ public class MusicLinkedList implements MusicList {
 			} // end while
 		}
 
-		//TODO
-		//TODO
-		//TODO
-		// iterate through entire structure, save biggest sample in entire thing
-		// iterate through again, and divide by max
 		if(!allowClipping) {
 				
 			float newMax = 0.0f; 
@@ -141,73 +156,111 @@ public class MusicLinkedList implements MusicList {
 				for(int i = 0; i < eachSample.length; i++) {
 					
 					eachSample[i] = eachSample[i]/newMax;
-					//System.out.println("INSIDE: "+eachSample[i]);
 				}
 				
 				tmp = tmp.getNextX();
 			}
 			
-		}
+		} // end no clip
 
 	} // end method
 		
 		
-	//TODO 5pts
 	/** Clips the SoundList by throwing away all samples before the startTime (in seconds), 
 	 * and after the duration (in seconds). So, if the SoundList was 6 seconds long, and we called clip(4,2), 
 	 * the new SoundList would be 2 seconds long (and would consist of samples from second 4 to second 6 
-	 * of the original SoundList)
-	 */
+	 * of the original SoundList). */
 	@Override
 	public void clip(float startTime, float duration) {
 
-			// start after node to start, if 14, start at 15. if stop at 85, really stop at 84.
-			// startingSample(Index) = startTime* sampleRate
-			// endTime = (startTime + duration)(sampleRate)
+		float sampleDuration = 1/sampleRate;
+		float startSample = startTime*sampleRate;
+		float endSample = (startTime + duration)*sampleRate;
 
+		int startSampleInt = 1;
+		
+		startSample = startSample/startSampleInt;
+		startSampleInt = (int)startSample/1;
+		
+		Link beginningOfSample = head;
+		Link sampleHead = null;
+		Link sampleTail = null;
+		
+		for(int i = 0; i < startSampleInt; i++){
 			
-			InnerIterator iterator = new InnerIterator();
-			float[] eachSample = new float[getNumChannels()];
-			
-			//Link current = head;
-			//Link beginPointer = head;
-			
-			//float begin = startTime*sampleRate;
-			//float end = (startTime+duration)*sampleRate;
-			
-			float start = 0.0f;
-			//int a = 0, index = 0;
-			
-		while(iterator.hasNext()) {
-			
-			eachSample = iterator.next();
-			
-			for(int i = 0; i < eachSample.length; i++) {
-				
-				start +=  1.0 / (double) sampleRate;
-				
-				if(start >= startTime&& i > 0) {
-					i++;
-					//System.out.println("MONO First**: " +start);
-				}
-				
-			}
-			//System.out.println("MONO First: " +start);	
+			sampleHead = beginningOfSample;
+			beginningOfSample = beginningOfSample.getNextX();
 		}
+		
+		sampleTail = beginningOfSample;
+		
+		for(int i = (int)startSample; i < endSample; i++){
+			
+			sampleTail = sampleTail.getNextX();			
+		}
+		
+		Link yIter = sampleTail;
+		
+		while(yIter != null){
+			
+			yIter.setNextX(null);
+			yIter = yIter.getNextY();
+			
+		}
+		
+		head = sampleHead;
+		tail = sampleTail; 
+		
 	}
 
-	// TODO 5pts
-	/* Splice (join) clipToSplice into this clip, starting at startSpliceTime */
+	
+	/** Splice (join) clipToSplice into this clip, starting at startSpliceTime 
+	 * Go through list until specific time (beginning of sample). Iterate through clip
+	 * samples and add them. Then set them to initial sample list (MusicLinkedList). */
 	@Override
 	public void spliceIn(float startSpliceTime, MusicList clipToSplice) {
-		/* Iterate through list until specific time. Once at time, save link with spliceTime and
-		 * next link with one after spliceTime. NewMusicList links to link with SpliceTime and
-		 * last link of NewMusicList links to originalMusicList's next link (link after SpliceTime)
-		 */
+		
+		
+		float beginningOfSample = startSpliceTime*sampleRate;
+		int startSampleInt = 1;
+		beginningOfSample /= startSampleInt;
+		
+		Link current = head;
+		Link endOfSplice = null;
+
+		startSampleInt = (int)beginningOfSample/1;
+		 
+		for(int i = 0; i < beginningOfSample; i++){
+			 
+			current = current.getNextX();
+		}
+		 
+		tail = current;
+		endOfSplice = tail.getNextX();
+		 
+		Iterator<float[]> clipIter = clipToSplice.iterator();
+		 
+		for(int i = 0; i < clipToSplice.getNumSamples(); i++){
+			 
+			float[] splicedSamples = clipIter.next();
+			addSample(splicedSamples);
+		}
+		 
+		Link temp = tail;
+		 
+		while(temp != null){
+			 
+			temp.setNextX(endOfSplice);
+			temp = temp.getNextY();
+			endOfSplice = endOfSplice.getNextX();
+			 
+		}
+		 
 	}
 
 
-	/* Reverses the musicLinkedList */
+	/**
+	 *  Reverses the musicLinkedList */
 	@Override
 	public void reverse() {
 
@@ -283,7 +336,8 @@ public class MusicLinkedList implements MusicList {
 		numSamples++;
 		int len = sample.length;
 
-		if(len > getNumChannels()) {
+		if(len != getNumChannels()) {
+			System.out.println("ERROR!");
 			throw new IllegalArgumentException();
 		}
 		
@@ -378,7 +432,6 @@ public class MusicLinkedList implements MusicList {
 			
 		}
 		
-		//allowClipping = false;
 		if(!allowClipping) {
 
 			current = head;
@@ -659,7 +712,7 @@ public class MusicLinkedList implements MusicList {
 	 */
 	public static void main(String[] args) {
 
-		MusicLinkedList list = new MusicLinkedList(5, 5);
+		/*MusicLinkedList list = new MusicLinkedList(5, 5);
 		MusicLinkedList list2 = new MusicLinkedList(5,5);
 		MusicLinkedList listSingle = new MusicLinkedList(1, 1);
 		
@@ -673,7 +726,7 @@ public class MusicLinkedList implements MusicList {
 		float x = 1;
 		float y = 2;
 		float a = 3;
-		float b = 4;
+		float b = 4;*/
 
 		/*System.out.println("Single");
 		listSingle.addSample(x);
@@ -685,10 +738,10 @@ public class MusicLinkedList implements MusicList {
 		System.out.println("Done Single");*/
 
 		//System.out.println("Array");
-		list.addSample(sample1);
+		/*list.addSample(sample1);
 		list.addSample(sample2);
 		list2.addSample(sample3);
-		list2.addSample(sample4);
+		list2.addSample(sample4);*/
 		//list.addSample(sample3);
 		//list.addSample(sample6);
 		//list.addSample(sample4);
@@ -704,11 +757,7 @@ public class MusicLinkedList implements MusicList {
 		//list.testIterator(sample1);
 		//list.testIterator(sample2);
 		//System.out.println("REVERSE1");
-		System.out.println("Combine Before: ");
-		System.out.println("List1: \n"+list.toString());
-		System.out.println("List2: \n"+list2.toString());
-		System.out.println("Combining");
-		list.combine(list2, false);
+		
 		//list.clone();
 		
 		//list.reverse();
@@ -724,8 +773,8 @@ public class MusicLinkedList implements MusicList {
 		listSingle.testIterator(x);*/
 
 		//System.out.println(list.toString());
-		System.out.println("Combine After: ");
-		System.out.println(list.toString());
+		//System.out.println("Combine After: ");
+		//System.out.println(list.toString());
 	}
 }
 

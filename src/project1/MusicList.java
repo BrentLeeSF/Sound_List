@@ -50,14 +50,7 @@ public interface MusicList {
 	 * cuts the speed in half (and lowers the pitch)
 	 */
 	public void changeSpeed(float percentChange);
-	
-	/**
-	 * Change the sample rate of the SoundList.  This will increase (or decrease) the number of samples in the list, based on
-	 * the new rate.  The total time (and pitch) of the sound should remain the same. (Though of course you will lose information
-	 * if the new sample rate is lower than the old sample rate)
-	 * @param newRate the new sampling rate
-	 */
-	public void changeSampleRate(float newRate);
+
 	
 	/**
 	 * Add a single sample to the end of the SoundList.  Throws an exception if the soundlist has more than 1 channel 
@@ -124,4 +117,6 @@ public interface MusicList {
 	 * @return The cloned SoundList
 	 */
 	public MusicList clone();
+	
 }
+
